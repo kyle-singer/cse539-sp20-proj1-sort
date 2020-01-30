@@ -98,7 +98,7 @@ void call_cilk_sort(long *array, unsigned long size, long start,
     }
     // free the array if not the same
     if(array != cilk_res) { free(cilk_res); }
-    else { scramble_array(array, size); }
+    fill_array(array, size, start);
   }
 
   print_runtime(elapsed_time, TIMING_COUNT);
@@ -124,7 +124,7 @@ void call_pthread_sort(long *array, unsigned long size, long start,
     }
     // free the array if not the same
     if(array != pthread_res) { free(pthread_res); }
-    else { scramble_array(array, size); }
+    fill_array(array, size, start);
   }
 
   print_runtime(elapsed_time, TIMING_COUNT);
@@ -213,7 +213,9 @@ int main(int argc, char **argv) {
     char num_threads_str[64];
     sprintf(num_threads_str, "%" PRIuPTR "", num_threads);
     __cilkrts_set_param("nworkers", num_threads_str);
+    __cilkrts_init();
     call_cilk_sort(array, size, start, num_threads, check);
+    __cilkrts_end_cilk();
   }
 
   if (run_pthread) {
